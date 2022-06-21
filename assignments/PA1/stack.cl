@@ -46,8 +46,14 @@ class Stack inherits IO {
 
    pop() : Stack {
       {
-         head <- head.next();
-         self;
+         if (not isvoid head) then 
+         {
+            head <- head.next();
+            self;
+         }
+         else
+            self
+         fi;
       }
    };
 
@@ -72,26 +78,33 @@ class Stack inherits IO {
          e1 : ListNode, 
          e2 : ListNode, 
          e : ListNode,
-         t : ListNode <- top() 
+         t : ListNode <- self.top()
       in 
       {
-         if (t.val() = "s") then {
-            e1 <- self.top();
-            self.pop();
-            e2 <-self.top();
-            self.pop();
-            self.push(e1);
-            self.push(e2);
-         }
-         else if (t = "+") then {
-            e1 <- self.top();
-            self.pop();
-            e2 <-self.top();
-            self.pop();
-            self.push(cvt.i2a(cvt.a2i(e1.val()) + cvt.a2i(e2.val())));
-         } else
+         if (isvoid t) then
             self
-         fi fi;
+         else {
+            if (t.val() = "s") then {
+               self.pop();
+               e1 <- self.top();
+               self.pop();
+               e2 <-self.top();
+               self.pop();
+               self.push(e1.val());
+               self.push(e2.val());
+            }
+            else if (t.val() = "+") then {
+               self.pop();
+               e1 <- self.top();
+               self.pop();
+               e2 <-self.top();
+               self.pop();
+               self.push(cvt.i2a(cvt.a2i(e1.val()) + cvt.a2i(e2.val())));
+            } else
+               self
+            fi fi;
+         }
+         fi;
       }
    };
 };
@@ -103,36 +116,14 @@ class Main inherits IO {
    flag : Bool <- true;
    x : String;
    atoi : A2I <- new A2I;
-   lst : List <- new List;
-
-   inchar() : Object {
-      {
-         out_string(">");
-         x = in_string();
-         out_string("\n");
-      }
-   };
-
-   -- process() : Bool {
-   --    {
-   --       if (x = "x") then 
-   --          false
-   --       else if (x = "d") then {
-   --          st.show();
-   --       } else if (x = "e") then {
-   --          st.eval();
-   --       } else {
-   --          st.push(x);
-   --       } fi fi fi;
-   --       true
-   --    }
-   -- };
 
    main() : Object {
       {
          while (flag) loop {
+            out_string(">");
+            x <- in_string();
             if (x = "x") then 
-               stop <- true
+               flag <- false
             else if (x = "d") then {
                st.show();
             } else if (x = "e") then {
